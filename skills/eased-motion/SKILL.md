@@ -73,7 +73,7 @@ In CSS, the same springs are `linear()` curves. Pair each one with its duration:
 }
 ```
 
-With Eased installed these are `--eased-spring-snappy` with `--eased-duration-spring-snappy`, and so on, or the Tailwind classes `ease-spring-snappy`, `ease-spring-smooth` and `ease-spring-bouncy`.
+The full set of motion variables, ready to paste, is in `reference/eased-motion.css` in this skill's folder. With Eased installed these are `--eased-spring-snappy` with `--eased-duration-spring-snappy`, and so on, or the Tailwind classes `ease-spring-snappy`, `ease-spring-smooth` and `ease-spring-bouncy`.
 
 ## Curves
 
