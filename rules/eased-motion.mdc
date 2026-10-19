@@ -1,0 +1,226 @@
+---
+description: Motion rules and values from Eased (eased.dev). Apply when adding or changing animations, transitions, hover or press states, enter and exit, label swaps, staggers or reduced-motion handling in React and Tailwind code.
+globs: "**/*.{tsx,jsx,css}"
+alwaysApply: false
+---
+
+# Eased motion
+
+These are the motion rules and values Eased components are built with. Use them for any animation you add, so everything in the project moves the same way.
+
+## If Eased components are installed, use them
+
+Check for `components/eased/` in the project. If it exists:
+
+- Use the installed Eased component for the job (Button, Popover, Tooltip, Tabs, Segmented, Accordion, Text Swap and so on). Don't build a second animated version beside it.
+- Don't wrap Eased components in extra animation. Their motion is already tuned, and a second transition fights it.
+- Import the shared values from `components/eased/lib/motion.ts` (`snappy`, `smooth`, `bouncy`, `ease`, `duration`, `stagger`, `enter`, `exit`, `reducedFade`, `useSafeReducedMotion`) and press classes from `components/eased/lib/press.ts` (`press`, `pressIcon`, `pressWide`). Don't retype the numbers.
+
+If a component you need isn't installed, add it with the shadcn CLI. Eased is in the shadcn registry index under `@eased`:
+
+```bash
+npx shadcn add @eased/button
+```
+
+Or by URL:
+
+```bash
+npx shadcn add https://eased.dev/r/button.json
+```
+
+Free components include accordion, avatar, badge, breadcrumb, button, carousel, code-block, code-tabs, date-picker, dropdown-menu, file-upload, input, kbd, number-roll, pagination, popover, progress, radio-group, rating, segmented, skeleton, snippet, spinner, tabs, text-swap, textarea, toggle-group, tooltip and tree. The full list is at https://eased.dev/llms.txt.
+
+If Eased isn't installed and the user doesn't want it, use the values below directly.
+
+## When to animate
+
+Motion is for feedback and continuity:
+
+- Feedback on a press, toggle or selection.
+- Something appearing from, or returning to, the thing that opened it.
+- A value or label changing in place.
+- A height or layout change the user caused.
+
+## When not to animate
+
+- Keyboard-driven, high-frequency actions: opening a command menu or context menu, adding or removing list items, typing.
+- Layout the user didn't trigger.
+- Hover never changes size, weight or position. It changes colour or shadow by one step.
+- Never animate `width`, `height`, `top`, `left`, `margin`, `padding` or `box-shadow` frame by frame. Animate only `transform`, `opacity`, `clip-path`, `filter` (blur up to 8px) and colours.
+- Never use `transition: all`.
+- Set `will-change` only during a gesture, and remove it after. Never put it in a stylesheet.
+
+## Springs
+
+Use only these three.
+
+| Spring | Motion (motion/react) | CSS duration | Use for |
+|---|---|---|---|
+| `snappy` | `{ type: "spring", stiffness: 520, damping: 38 }` | 350ms | Presses, toggles, thumbs, indicators, text swaps, rolling digits, the focus ring |
+| `smooth` | `{ type: "spring", visualDuration: 0.4, bounce: 0 }` | 450ms | Height and layout changes, FLIP, panels, toast and tooltip position. No overshoot. |
+| `bouncy` | `{ type: "spring", stiffness: 400, damping: 26 }` | 600ms | Shape morphs and playful reveals only. Never on an exit. |
+
+In CSS, the same springs are `linear()` curves. Pair each one with its duration:
+
+```css
+:root {
+  --spring-snappy: linear(0, 0.0347, 0.1182, 0.2269, 0.3441, 0.4591, 0.5654, 0.6594, 0.7398, 0.8064, 0.8603, 0.9028, 0.9355, 0.96, 0.9778, 0.9902, 0.9986, 1.0039, 1.007, 1.0084, 1.0088, 1.0084, 1.0077, 1.0067, 1.0057, 1.0047, 1.0038, 1.0029, 1);
+  --spring-smooth: linear(0, 0.0323, 0.1079, 0.2039, 0.3059, 0.4053, 0.4974, 0.5799, 0.6519, 0.7138, 0.7661, 0.8099, 0.8462, 0.8761, 0.9006, 0.9205, 0.9366, 0.9495, 0.9599, 0.9683, 0.9749, 0.9802, 0.9844, 0.9877, 0.9904, 0.9924, 0.9941, 0.9954, 1);
+  --spring-bouncy: linear(0, 0.0758, 0.2474, 0.4501, 0.6424, 0.8022, 0.9212, 1.0003, 1.0455, 1.0651, 1.0673, 1.0593, 1.0464, 1.0326, 1.0202, 1.0103, 1.0032, 0.9987, 0.9963, 0.9954, 0.9956, 0.9963, 0.9972, 0.9981, 0.9989, 0.9995, 1, 1.0002, 1);
+}
+
+.thumb {
+  transition: translate 350ms var(--spring-snappy);
+}
+```
+
+With Eased installed these are `--eased-spring-snappy` with `--eased-duration-spring-snappy`, and so on, or the Tailwind classes `ease-spring-snappy`, `ease-spring-smooth` and `ease-spring-bouncy`.
+
+## Curves
+
+| Name | Value | Use for |
+|---|---|---|
+| enter | `cubic-bezier(0.16, 1, 0.3, 1)` | Things that appear |
+| standard | `cubic-bezier(0.22, 1, 0.36, 1)` | Colour and opacity while something stays on screen |
+| exit | `cubic-bezier(0.7, 0, 0.84, 0)` | Things that leave |
+| in-out | `cubic-bezier(0.65, 0, 0.35, 1)` | Movement that starts and ends on screen |
+
+## Durations
+
+| Name | Value | Use for |
+|---|---|---|
+| instant | 100ms | Press-down and the reduced-motion fade |
+| fast | 150ms | Hover and colour changes |
+| standard | 200ms | Popovers and tooltips |
+| slow | 300ms | Dialogs |
+| sheet | 500ms | Sheets and drawers |
+
+Interaction feedback never takes longer than 200ms.
+
+## Enter and exit
+
+Exits are faster than enters. Something that appears is something to look at. Something that leaves is in the way. So an exit:
+
+- takes at most three quarters of the enter time
+- uses the exit (ease-in) curve
+- never overshoots, so never use `bouncy` on an exit
+
+Values Eased uses:
+
+- Enter: 200ms on the enter curve. Fade in, rise 6px toward the trigger, scale from 0.97.
+- Exit: 150ms on the exit curve. Fade out, travel 3px, scale to 0.98.
+- Small things that leave (buttons, chips, the outgoing half of a swap): 100ms on the exit curve.
+
+```tsx
+<motion.div
+  initial={{ opacity: 0, y: 6, scale: 0.97 }}
+  animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
+  exit={{ opacity: 0, y: 3, scale: 0.98, transition: { duration: 0.15, ease: [0.7, 0, 0.84, 0] } }}
+/>
+```
+
+- Anything that opens from a trigger grows from it. Set `transform-origin` to the trigger.
+- Nothing scales up from 0.
+- Make open and close interruptible: CSS transitions with `@starting-style`, or Motion's `animate`, so reversing mid-flight is smooth. Use `@keyframes` only for entrances that play once on mount.
+
+## Press
+
+Press down in 100ms, release on `snappy`. The scale depends on width, so a wide bar doesn't dip further than a small icon.
+
+| Target | Scale |
+|---|---|
+| Icon buttons up to 48px | 0.96 |
+| Text buttons | 0.97 |
+| Bars and cards wider than 220px | 0.985 |
+
+Triggers that open a popover or menu never scale. They press by colour instead.
+
+## Hover
+
+Apply hover styles only on devices with a fine pointer, so touch doesn't get stuck hover states:
+
+```css
+@media (hover: hover) and (pointer: fine) {
+  .row:hover { /* colour or shadow change, one step */ }
+}
+```
+
+With Eased installed, use the `hover-fine:` and `group-hover-fine:` variants. Touch gets an `:active` colour instead.
+
+## Swapping a label or icon in place
+
+For changes like Save to Saved, or a copy icon to a check: the old item moves up 3px and the new one rises from 4px below, each with a 4px blur. The movement uses `snappy`. Opacity and blur tween separately at 150ms on the standard curve, so the blur clears before the movement settles.
+
+```tsx
+<AnimatePresence mode="popLayout" initial={false}>
+  <motion.span
+    key={label}
+    initial={{ opacity: 0, y: 4, filter: "blur(4px)" }}
+    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+    exit={{ opacity: 0, y: -3, filter: "blur(4px)" }}
+    transition={{
+      type: "spring", stiffness: 520, damping: 38,
+      opacity: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+      filter: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+    }}
+  >
+    {label}
+  </motion.span>
+</AnimatePresence>
+```
+
+## Stagger
+
+| Unit | Step |
+|---|---|
+| Character | 16ms |
+| List item | 35ms |
+| Word | 40ms |
+| Line | 80ms |
+
+Keep the whole stagger under 400ms. It runs once when the list mounts, never on a re-render.
+
+## Indicators
+
+Tab underlines, segmented thumbs and selections glide to the new item with shared layout (`layoutId`) on `snappy`. The items under them never scale or change weight.
+
+## Reduced motion
+
+Every animation needs a reduced branch. Under `prefers-reduced-motion: reduce`, movement becomes a 100ms opacity fade or nothing, and looping animations stop.
+
+- In CSS, use `@media (prefers-reduced-motion: reduce)` (the `reduced:` variant with Eased installed).
+- In React, read the setting after hydration, not during the first render, or reduced-motion visitors get a hydration mismatch. With Eased installed, use `useSafeReducedMotion()` from `components/eased/lib/motion.ts` rather than Motion's `useReducedMotion`. Without it:
+
+```tsx
+import { useSyncExternalStore } from "react";
+
+const REDUCE = "(prefers-reduced-motion: reduce)";
+
+export function useSafeReducedMotion() {
+  return useSyncExternalStore(
+    (onChange) => {
+      const mq = window.matchMedia(REDUCE);
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(REDUCE).matches,
+    () => false,
+  );
+}
+
+const reduced = useSafeReducedMotion();
+<motion.div layout transition={reduced ? { duration: 0.1 } : { type: "spring", stiffness: 520, damping: 38 }} />
+```
+
+- Loops pause off-screen and under reduced motion. Anything that autoplays for more than 5 seconds gets a pause control.
+
+## Before you finish
+
+- [ ] Every animation uses one of the three springs or a named curve and duration.
+- [ ] Exits are at most three quarters of their enter, on the exit curve, with no overshoot.
+- [ ] Nothing animates layout properties frame by frame, and there's no `transition: all`.
+- [ ] Hover styles apply only on fine pointers and never change size or position.
+- [ ] Every animation has a reduced-motion branch, read after hydration.
+- [ ] If Eased components are installed, they're used, and none is wrapped in extra animation.
+
+For layout, spacing, corners, colour and type rules as well, use the full Eased design skill: `npx shadcn add https://eased.dev/r/eased-skill.json`. Motion docs: https://eased.dev/docs/motion

@@ -1,0 +1,30 @@
+/* Eased motion values, copied from the eased-tokens stylesheet at https://eased.dev/r/eased-tokens.json.
+ * Use these in a project that doesn't have Eased installed. If Eased is installed, these already exist. */
+
+:root {
+  --eased-duration-instant: 100ms;
+  --eased-duration-fast: 150ms;
+  --eased-duration-standard: 200ms;
+  --eased-duration-slow: 300ms;
+  --eased-duration-sheet: 500ms;
+  --eased-duration-focus: 180ms;
+  --eased-ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --eased-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --eased-ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  --eased-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --eased-spring-snappy: linear(0, 0.0347, 0.1182, 0.2269, 0.3441, 0.4591, 0.5654, 0.6594, 0.7398, 0.8064, 0.8603, 0.9028, 0.9355, 0.96, 0.9778, 0.9902, 0.9986, 1.0039, 1.007, 1.0084, 1.0088, 1.0084, 1.0077, 1.0067, 1.0057, 1.0047, 1.0038, 1.0029, 1);
+  --eased-spring-smooth: linear(0, 0.0323, 0.1079, 0.2039, 0.3059, 0.4053, 0.4974, 0.5799, 0.6519, 0.7138, 0.7661, 0.8099, 0.8462, 0.8761, 0.9006, 0.9205, 0.9366, 0.9495, 0.9599, 0.9683, 0.9749, 0.9802, 0.9844, 0.9877, 0.9904, 0.9924, 0.9941, 0.9954, 1);
+  --eased-spring-bouncy: linear(0, 0.0758, 0.2474, 0.4501, 0.6424, 0.8022, 0.9212, 1.0003, 1.0455, 1.0651, 1.0673, 1.0593, 1.0464, 1.0326, 1.0202, 1.0103, 1.0032, 0.9987, 0.9963, 0.9954, 0.9956, 0.9963, 0.9972, 0.9981, 0.9989, 0.9995, 1, 1.0002, 1);
+  --eased-duration-spring-snappy: 350ms;
+  --eased-duration-spring-smooth: 450ms;
+  --eased-duration-spring-bouncy: 600ms;
+  --eased-press-scale: 0.97;
+  --eased-press-scale-icon: 0.96;
+  --eased-press-scale-wide: 0.985;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --eased-duration-focus: 0ms;
+  }
+}
